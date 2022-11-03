@@ -65,6 +65,8 @@ while (supervisor.step(timestep) != -1 and
         if step_counter >= step_max:
             break
 
+supervisor.wwiSendText('stop')
+
 if RECORD_ANIMATION:
     # Write performance to file, stop recording and close Webots
     rec.record_performance(not metric.isBenchmarkOver(), metric.getPerformance())
