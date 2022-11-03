@@ -65,7 +65,7 @@ while supervisor.step(timestep) != -1:
     while message:
         if message.startswith("record:"):
             performance = metric.getPerformance()
-            record = robotbenchmarkRecord(message, "square_path", performance)
+            # record = robotbenchmarkRecord(message, "square_path", performance)
             supervisor.wwiSendText(record)
         elif message == "exit":
             break
