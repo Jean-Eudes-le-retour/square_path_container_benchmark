@@ -5,15 +5,13 @@ from square_path_metric import SquarePathMetric
 
 import os
 import sys
-try:
-    includePath = os.environ.get("WEBOTS_HOME") + "/projects/samples/robotbenchmark/include"
-    includePath.replace('/', os.sep)
-    sys.path.append(includePath)
-    from robotbenchmark import robotbenchmarkRecord
-except ImportError:
-    sys.stderr.write("Warning: 'robotbenchmark' module not found.\n")
-    sys.exit(0)
 
+# Constant used for the automated benchmark evaluation script
+# - can also be used to generate an animation in storage folder if set to True
+RECORD_ANIMATION = False
+
+if RECORD_ANIMATION:
+    import recorder.recorder as rec
 
 # Set to true to enable information displayed in labels.
 ALLOW_LABELS = False
@@ -34,6 +32,11 @@ timestep = int(supervisor.getBasicTimeStep())
 # Gets the reference to the robot.
 pioneer = supervisor.getFromDef('PIONEER')
 
+if RECORD_ANIMATION:
+    # Recorder code: wait for the controller to connect and start the animation
+    rec.animation_start_and_connection_wait(supervisor)
+    step_max = 1000 * rec.MAX_DURATION / timestep
+    step_counter = 0
 
 # Main loop starts here.
 while (supervisor.step(timestep) != -1 and
@@ -55,20 +58,19 @@ while (supervisor.step(timestep) != -1 and
 
     for pointMessage in metric.getWebNewPoints():
         supervisor.wwiSendText(pointMessage)
-
-supervisor.wwiSendText('stop')
-
-
-# Wait for credentials sent by the robot window.
-while supervisor.step(timestep) != -1:
-    message = supervisor.wwiReceiveText()
-    while message:
-        if message.startswith("record:"):
-            performance = metric.getPerformance()
-            # record = robotbenchmarkRecord(message, "square_path", performance)
-            supervisor.wwiSendText(record)
-        elif message == "exit":
+    
+    if RECORD_ANIMATION:
+        # Stops the simulation if the controller takes too much time
+        step_counter += 1
+        if step_counter >= step_max:
             break
-        message = supervisor.wwiReceiveText()
+
+if RECORD_ANIMATION:
+    # Write performance to file, stop recording and close Webots
+    rec.record_performance(not metric.isBenchmarkOver(), metric.getPerformance())
+    rec.animation_stop(supervisor, timestep)
+    supervisor.simulationQuit(0)
+else:
+    print(f"Benchmark finished with a performance of {metric.getPerformance()*100:.2f}%")
 
 supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
