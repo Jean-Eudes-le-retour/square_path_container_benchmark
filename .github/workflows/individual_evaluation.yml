@@ -40,6 +40,11 @@ jobs:
         run: bash .github/default_controller_name_regex.sh
         continue-on-error: true
 
+      - name: Fetch environment variables from file
+        run: |
+          sed "" ./.github/variables.env >> $GITHUB_ENV
+        shell: bash
+
       - name: Record and update Benchmark animations
         id: webots_test
         run: |
@@ -49,9 +54,8 @@ jobs:
           INPUT_PUSH_TOKEN: ${{ github.token }}
           INPUT_INDIVIDUAL_EVALUATION: ${{ env.INDIVIDUAL_REF }}
           DEFAULT_CONTROLLER: ${{ env.DEFAULT_CONTROLLER }}
-          # TODO: find an easier way to access the default values
-          SUPERVISOR_NAME: square_path_supervisor
-          PROJECT_PATH: /usr/local/webots-project
+          SUPERVISOR_NAME: ${{ env.SUPERVISOR_NAME }}
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}
         continue-on-error: true
 
       - name: Feedback on success
