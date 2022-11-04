@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 -u
+#!/usr/bin/env python3
 #
 # Copyright 1996-2020 Cyberbotics Ltd.
 #
