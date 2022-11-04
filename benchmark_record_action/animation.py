@@ -50,6 +50,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
     # Build the recorder and the controller containers with their respective Dockerfile
     subprocess.check_output([
         "docker", "build",
+        "--build-arg", f'PROJECT_PATH={os.environ["PROJECT_PATH"]}',
         "-t", "recorder-webots",
         "-f", "Dockerfile", "."
     ])
