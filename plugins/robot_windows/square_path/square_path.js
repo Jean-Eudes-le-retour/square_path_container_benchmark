@@ -5,6 +5,33 @@ window.robotWindow = new RobotWindow();
 const benchmarkName = 'Square Path';
 let benchmarkPerformance = 0;
 
+// modal pop-up box code
+
+const modal = document.querySelector(".modal");
+const closeButton = document.querySelector(".close-button");
+
+function toggleModal() {
+    modal.classList.toggle("show-modal");
+}
+
+function windowOnClick(event) {
+    if (event.target === modal) {
+        toggleModal();
+    }
+}
+
+closeButton.addEventListener("click", toggleModal);
+window.addEventListener("click", windowOnClick); 
+
+function setSuccessMessage(benchmarkName, benchmarkPerformanceString) {
+  document.querySelector(".text").innerHTML = `
+  <h2>${benchmarkName} complete</h2>
+  <h3>Congratulations you finished the benchmark!</h3>
+  <p>Your current performance is: ${benchmarkPerformanceString}.</p>
+  <p>If you want to submit your controller to the leaderboard, follow the instructions given by the "Register" button on the benchmark page.</p>
+  `;
+}
+
 // recovers the bottom canvas, used for everything but the robot
 const squareContext = document.getElementById('square-canvas').getContext('2d');
 
@@ -71,6 +98,8 @@ window.robotWindow.receive = function(message, robot) {
       document.getElementById('average-display').style.color = 'red';
       for (let i = 0; i < 4; ++i)
         document.getElementById('segment' + i + '-display').style.color = 'red';
+      setSuccessMessage(benchmarkName, metricToString(benchmarkPerformance));
+      toggleModal();
     }
   } else if (message.startsWith('record:OK:')) {
     document.getElementById('average-display').style.fontWeight = 'bold';
