@@ -8,7 +8,7 @@ import sys
 
 # Constant used for the automated benchmark evaluation script
 # - can also be used to generate an animation in storage folder if set to True
-RECORD_ANIMATION = False
+RECORD_ANIMATION = True
 
 if RECORD_ANIMATION:
     import recorder.recorder as rec

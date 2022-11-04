@@ -34,13 +34,13 @@ def record_animations(world_config, destination_directory, controller_name, supe
     recorder_content = _replace_field(
         f"controllers/{supervisor_name}/recorder/recorder.py",
         (
-            'OUTPUT_FOLDER = "storage/"',
+            'OUTPUT_FOLDER = "../../storage"',
             'CONTROLLER_NAME = "animation_0"',
             'MAX_DURATION = 10',
             'METRIC = "percent"'
         ),
         (
-            f'OUTPUT_FOLDER = "{destination_directory}/"',
+            f'OUTPUT_FOLDER = "{os.environ["DOCKER_PROJECT_LOCATION"]}/{destination_directory}"',
             f'CONTROLLER_NAME = "{controller_name}"',
             f'MAX_DURATION = {world_config["max-duration"]}',
             f'METRIC = "{world_config["metric"]}"'
@@ -51,7 +51,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
     subprocess.check_output([
         "docker", "build",
         "-t", "recorder-webots",
-        "-f", "recorder_Dockerfile", "."
+        "-f", "Dockerfile", "."
     ])
     # - Build the controller container from the cloned repository
     subprocess.check_output([
@@ -65,7 +65,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
     webots_docker = subprocess.Popen(
         [
             "docker", "run", "-t", "--rm",
-            "--mount", f'type=bind,source={os.getcwd()}/tmp/animation,target=/usr/local/tmp/animation',
+            "--mount", f'type=bind,source={os.getcwd()}/tmp/animation,target={os.environ["DOCKER_PROJECT_LOCATION"]}/{destination_directory}',
             "-p", "3005:1234", "recorder-webots"
         ],
         stdout=subprocess.PIPE,
