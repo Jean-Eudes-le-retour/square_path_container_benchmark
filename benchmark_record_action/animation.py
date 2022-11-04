@@ -62,7 +62,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
     ])
 
     # Run the Webots container with Popen to read the stdout
-    webots_process = subprocess.Popen(
+    webots_docker = subprocess.Popen(
         [
             "docker", "run", "-t", "--rm",
             "--mount", f'type=bind,source={os.getcwd()}/tmp/animation,target=/usr/local/tmp/animation',
@@ -75,8 +75,8 @@ def record_animations(world_config, destination_directory, controller_name, supe
 
     # - Read webots' stdout in real-time to know when to start the competitor's controller
     already_launched_controller = False
-    while webots_process.poll() is None:
-        realtime_output = webots_process.stdout.readline()
+    while webots_docker.poll() is None:
+        realtime_output = webots_docker.stdout.readline()
         print(realtime_output.replace('\n', ''))
         if not already_launched_controller and "waiting for connection" in realtime_output:
                 print("Webots ready for controller, launching controller container...")
