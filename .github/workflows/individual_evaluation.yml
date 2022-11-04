@@ -51,6 +51,7 @@ jobs:
           DEFAULT_CONTROLLER: ${{ env.DEFAULT_CONTROLLER }}
           # TODO: find an easier way to access the default values
           SUPERVISOR_NAME: square_path_supervisor
+          PROJECT_PATH: /usr/local/webots-project
         continue-on-error: true
 
       - name: Feedback on success
