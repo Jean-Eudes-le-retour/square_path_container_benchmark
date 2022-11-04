@@ -52,10 +52,6 @@ jobs:
         env:
           INPUT_FETCH_TOKEN: ${{ secrets.REPO_TOKEN }}
           INPUT_PUSH_TOKEN: ${{ github.token }}
-          INPUT_INDIVIDUAL_EVALUATION: ${{ env.INDIVIDUAL_REF }}
-          DEFAULT_CONTROLLER: ${{ env.DEFAULT_CONTROLLER }}
-          SUPERVISOR_NAME: ${{ env.SUPERVISOR_NAME }}
-          PROJECT_PATH: ${{ env.PROJECT_PATH }}
         continue-on-error: true
 
       - name: Feedback on success
