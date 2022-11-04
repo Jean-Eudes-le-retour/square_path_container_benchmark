@@ -40,7 +40,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
             'METRIC = "percent"'
         ),
         (
-            f'OUTPUT_FOLDER = "{os.environ["DOCKER_PROJECT_LOCATION"]}/{destination_directory}"',
+            f'OUTPUT_FOLDER = "{os.environ["PROJECT_PATH"]}/{destination_directory}"',
             f'CONTROLLER_NAME = "{controller_name}"',
             f'MAX_DURATION = {world_config["max-duration"]}',
             f'METRIC = "{world_config["metric"]}"'
@@ -65,7 +65,7 @@ def record_animations(world_config, destination_directory, controller_name, supe
     webots_docker = subprocess.Popen(
         [
             "docker", "run", "-t", "--rm",
-            "--mount", f'type=bind,source={os.getcwd()}/tmp/animation,target={os.environ["DOCKER_PROJECT_LOCATION"]}/{destination_directory}',
+            "--mount", f'type=bind,source={os.getcwd()}/tmp/animation,target={os.environ["PROJECT_PATH"]}/{destination_directory}',
             "-p", "3005:1234", "recorder-webots"
         ],
         stdout=subprocess.PIPE,
