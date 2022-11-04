@@ -49,6 +49,8 @@ jobs:
           INPUT_PUSH_TOKEN: ${{ github.token }}
           INPUT_INDIVIDUAL_EVALUATION: ${{ env.INDIVIDUAL_REF }}
           DEFAULT_CONTROLLER: ${{ env.DEFAULT_CONTROLLER }}
+          # TODO: find an easier way to access the default values
+          SUPERVISOR_NAME: square_path_supervisor
         continue-on-error: true
 
       - name: Feedback on success
