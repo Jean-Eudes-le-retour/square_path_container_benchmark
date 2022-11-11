@@ -1,17 +1,9 @@
 """square_path_supervisor controller."""
 
+import os
+
 from controller import Supervisor
 from square_path_metric import SquarePathMetric
-
-import os
-import sys
-
-# Constant used for the automated benchmark evaluation script
-# - can also be used to generate an animation in storage folder if set to True
-RECORD_ANIMATION = False
-
-if RECORD_ANIMATION:
-    import recorder.recorder as rec
 
 # Set to true to enable information displayed in labels.
 ALLOW_LABELS = False
@@ -31,12 +23,6 @@ timestep = int(supervisor.getBasicTimeStep())
 
 # Gets the reference to the robot.
 pioneer = supervisor.getFromDef('PIONEER')
-
-if RECORD_ANIMATION:
-    # Recorder code: wait for the controller to connect and start the animation
-    rec.animation_start_and_connection_wait(supervisor)
-    step_max = 1000 * rec.MAX_DURATION / timestep
-    step_counter = 0
 
 # Main loop starts here.
 while (supervisor.step(timestep) != -1 and
@@ -58,20 +44,12 @@ while (supervisor.step(timestep) != -1 and
 
     for pointMessage in metric.getWebNewPoints():
         supervisor.wwiSendText(pointMessage)
-    
-    if RECORD_ANIMATION:
-        # Stops the simulation if the controller takes too much time
-        step_counter += 1
-        if step_counter >= step_max:
-            break
 
 supervisor.wwiSendText('stop')
 
-if RECORD_ANIMATION:
-    # Write performance to file, stop recording and close Webots
-    rec.record_performance(not metric.isBenchmarkOver(), metric.getPerformance())
-    rec.animation_stop(supervisor, timestep)
-    supervisor.simulationQuit(0)
+CI = os.environ.get("CI")
+if CI:
+    print(f"performance_line:{metric.getPerformance()}")
 else:
     print(f"Benchmark finished with a performance of {metric.getPerformance()*100:.2f}%")
 

@@ -114,7 +114,7 @@ window.robotWindow.receive = function(message, robot) {
   } else
     console.log("Received unknown message for robot '" + robot + "': '" + message + "'");
 
-  function metricToString(value) {
-    return (100 * value).toFixed(2) + '%';
+  function metricToString(metric) {
+    return (metric * 100).toFixed(2) + '%';
   }
 };
