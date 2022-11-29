@@ -49,7 +49,7 @@ supervisor.wwiSendText('stop')
 
 CI = os.environ.get("CI")
 if CI:
-    print(f"performance_line:{metric.getPerformance()}")
+    print(f"performance:{metric.getPerformance()}")
 else:
     print(f"Benchmark finished with a performance of {metric.getPerformance()*100:.2f}%")
 
